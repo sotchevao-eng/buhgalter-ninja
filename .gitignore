@@ -1,0 +1,13 @@
+.env
+server/.env
+node_modules/
+server/node_modules/
+logs/
+server/logs/
+*.log
+backups/
+*.dump
+*.sql.gz
+dump.sql
+.DS_Store
+Thumbs.db

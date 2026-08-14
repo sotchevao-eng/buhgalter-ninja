@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ninja
+      POSTGRES_PASSWORD: ninja
+      POSTGRES_DB: accountant_ninja
+    ports:
+      - "127.0.0.1:5432:5432"
+    # Только localhost. Не используйте эти пароли в production.
+    volumes:
+      - accountant_ninja_pg:/var/lib/postgresql/data
+
+volumes:
+  accountant_ninja_pg:

@@ -1,0 +1,32 @@
+#!/bin/bash
+# Пример выкладки «Бухгалтер-ниндзя».
+# Замените YOUR_PROJECT_PATH. Не запускайте, пока не прочитаете DEPLOY.md.
+# Скрипт не делает git pull сам: ветку и способ обновления выбираете вы.
+
+set -euo pipefail
+
+PROJECT_PATH="${PROJECT_PATH:-YOUR_PROJECT_PATH}"
+BRANCH="${BRANCH:-main}"
+
+cd "$PROJECT_PATH"
+
+echo "Проверка ветки. Ожидается $BRANCH — не переключаем git без вашего решения."
+git status
+
+echo "Установка зависимостей backend..."
+cd "$PROJECT_PATH/server"
+npm ci --omit=dev
+
+echo "Перед миграцией сделайте backup PostgreSQL, если это не первое развёртывание."
+npm run migrate
+
+echo "Frontend статический, сборка не нужна."
+
+echo "Перезапуск API..."
+sudo systemctl restart accountant-ninja
+
+echo "Проверка health..."
+sleep 2
+curl -fsS "http://127.0.0.1:3001/api/health"
+
+echo "Готово. Проверьте HTTPS-сайт и запуск во ВКонтакте."

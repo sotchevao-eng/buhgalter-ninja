@@ -1,0 +1,21 @@
+[Unit]
+Description=Accountant Ninja API
+After=network.target postgresql.service
+StartLimitIntervalSec=60
+StartLimitBurst=5
+
+[Service]
+Type=simple
+User=YOUR_APP_USER
+WorkingDirectory=YOUR_PROJECT_PATH/server
+Environment=NODE_ENV=production
+EnvironmentFile=YOUR_PROJECT_PATH/server/.env
+ExecStart=/usr/bin/node src/index.js
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=15
+KillSignal=SIGTERM
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target

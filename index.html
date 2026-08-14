@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#0A1F44">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <title>Бухгалтер-ниндзя — Спаси отчётность. Победи дедлайны.</title>
+  <link rel="stylesheet" href="./css/style.css?v=0.9.0">
+</head>
+<body>
+  <div id="app">
+    <div class="page-bg" aria-hidden="true"></div>
+
+    <div class="shell">
+      <section id="screen-loading" class="screen is-active">
+        <div class="brand-mark" aria-hidden="true">🥷📊</div>
+        <h1 class="title">БУХГАЛТЕР-НИНДЗЯ</h1>
+        <p class="loader-caption" id="loader-text">Загружаем первичку... 0%</p>
+        <div class="loader">
+          <div class="loader-fill" id="loader-fill"></div>
+        </div>
+      </section>
+
+      <section id="screen-menu" class="screen">
+        <canvas id="menu-fx" class="menu-fx" aria-hidden="true"></canvas>
+        <button type="button" id="menu-profile" class="menu-profile" data-action="profile" aria-label="Профиль">
+          <img id="menu-avatar" class="menu-avatar" width="40" height="40" alt="" hidden>
+          <div class="menu-hello-block">
+            <p id="menu-hello" class="menu-hello">Гость</p>
+            <p id="menu-hello-sub" class="menu-hello-sub">Бухгалтер-ниндзя</p>
+          </div>
+        </button>
+        <p id="menu-streak" class="menu-streak" hidden></p>
+        <div class="brand-mark" aria-hidden="true">🥷📊</div>
+        <h1 class="title">БУХГАЛТЕР-НИНДЗЯ</h1>
+        <p class="subtitle">Спаси отчётность. Победи дедлайны.</p>
+        <p class="greeting" id="menu-greeting">Готовы спасать отчётность?</p>
+        <button class="btn btn-gold btn-play" type="button" data-action="start" aria-label="Играть">ИГРАТЬ</button>
+        <div id="menu-daily" class="daily-card">
+          <div class="daily-kicker">🎯 ЗАДАНИЕ ДНЯ</div>
+          <div id="menu-daily-title" class="daily-title"></div>
+          <div id="menu-daily-progress" class="daily-progress"></div>
+          <div class="xp-bar"><div id="menu-daily-bar" class="xp-bar-fill"></div></div>
+          <div id="menu-daily-reward" class="daily-reward"></div>
+        </div>
+        <div class="menu-links">
+          <button class="btn btn-ghost" type="button" data-action="achievements" aria-label="Достижения">🏆 Достижения</button>
+          <button class="btn btn-ghost" type="button" data-action="records" aria-label="Мои рекорды">📊 Рекорды</button>
+          <button class="btn btn-ghost" type="button" data-action="leaderboard" aria-label="Рейтинг">🥇 Рейтинг</button>
+          <button class="btn btn-ghost" type="button" data-action="profile" aria-label="Профиль">👤 Профиль</button>
+          <button class="btn btn-ghost" type="button" data-action="howto" aria-label="Как играть">❓ Как играть</button>
+          <button class="btn btn-ghost" type="button" data-action="sound" id="btn-sound" aria-label="Звук">🔊 Звук</button>
+          <button class="btn btn-ghost" type="button" data-action="about" aria-label="Об игре">ℹ️ Об игре</button>
+        </div>
+        <p class="community">от сообщества «<span data-community-name>Налоговая не страшна</span>»</p>
+        <button class="btn btn-ghost btn-community" type="button" data-action="community" aria-label="Перейти в сообщество">Перейти в сообщество</button>
+      </section>
+
+      <section id="screen-howto" class="screen panel-screen">
+        <h2>Как играть</h2>
+        <div class="howto-grid">
+          <article class="howto-col howto-good">
+            <h3>Ловите</h3>
+            <ul>
+              <li>📄 Первичка</li>
+              <li>🧾 Акт</li>
+              <li>💰 Оплата</li>
+              <li>✅ Отчёт</li>
+            </ul>
+          </article>
+          <article class="howto-col howto-bad">
+            <h3>Избегайте</h3>
+            <ul>
+              <li>⚠️ Нет подписи</li>
+              <li>🚨 ФНС</li>
+              <li>💸 Штраф</li>
+              <li>🕵️ Проверка</li>
+            </ul>
+          </article>
+          <article class="howto-col howto-bonus">
+            <h3>Бонусы</h3>
+            <ul>
+              <li>☕ Кофе</li>
+              <li>⏰ Отсрочка</li>
+              <li>💎 Переплата</li>
+              <li>🔄 Сверка</li>
+            </ul>
+          </article>
+        </div>
+        <p class="keys">ПК: ← → или A / D · P — пауза · Пробел — старт</p>
+        <p class="keys">Combo ×20 включает ниндзя-режим и удваивает очки.</p>
+        <button class="btn btn-gold" type="button" data-action="replay-tutorial" aria-label="Пройти обучение ещё раз">Пройти обучение ещё раз</button>
+        <button class="btn btn-ghost" type="button" data-action="menu" aria-label="Назад">Назад</button>
+      </section>
+
+      <section id="screen-records" class="screen panel-screen">
+        <h2>Мои рекорды</h2>
+        <div id="records-body" class="card"></div>
+        <button class="btn btn-gold" type="button" data-action="menu" aria-label="Назад">Назад</button>
+      </section>
+
+      <section id="screen-leaderboard" class="screen panel-screen">
+        <h2>Лучшие бухгалтеры</h2>
+        <div class="board-tabs" role="tablist">
+          <button class="btn btn-ghost is-on" type="button" data-action="board-period" data-period="today">Сегодня</button>
+          <button class="btn btn-ghost" type="button" data-action="board-period" data-period="week">Неделя</button>
+          <button class="btn btn-ghost" type="button" data-action="board-period" data-period="all">Всё время</button>
+        </div>
+        <p id="leaderboard-status" class="board-note"></p>
+        <div id="leaderboard-me" class="board-me"></div>
+        <div id="leaderboard-body" class="card board-list"></div>
+        <button class="btn btn-gold" type="button" data-action="menu" aria-label="Назад">Назад</button>
+      </section>
+
+      <section id="screen-achievements" class="screen panel-screen">
+        <h2>🏆 Достижения</h2>
+        <p class="ach-count" id="ach-count"></p>
+        <div class="ach-filters">
+          <button class="btn btn-ghost is-on" type="button" data-action="ach-filter" data-filter="all">Все</button>
+          <button class="btn btn-ghost" type="button" data-action="ach-filter" data-filter="unlocked">Получено</button>
+          <button class="btn btn-ghost" type="button" data-action="ach-filter" data-filter="locked">Не получено</button>
+        </div>
+        <div id="achievements-body" class="ach-list"></div>
+        <button class="btn btn-gold" type="button" data-action="menu" aria-label="Назад">Назад</button>
+      </section>
+
+      <section id="screen-profile" class="screen panel-screen">
+        <h2>Мой профиль</h2>
+        <div id="profile-body" class="card profile-card"></div>
+        <button class="btn btn-gold" type="button" data-action="menu" aria-label="Назад">Назад</button>
+      </section>
+
+      <section id="screen-about" class="screen panel-screen">
+        <h2>Об игре</h2>
+        <p class="about-text">«Бухгалтер-ниндзя» — небольшая бухгалтерская аркада от сообщества «<span data-community-name>Налоговая не страшна</span>».</p>
+        <p class="about-version" id="about-version">Версия 0.9.0</p>
+        <button class="btn btn-gold" type="button" data-action="community" aria-label="Перейти в сообщество">Перейти в сообщество</button>
+        <p class="legal-links">
+          <a href="./privacy.html">Политика конфиденциальности</a>
+          <a href="./terms.html">Пользовательское соглашение</a>
+        </p>
+        <button class="btn btn-ghost" type="button" data-action="menu" aria-label="Назад">Назад</button>
+      </section>
+
+      <section id="screen-tutorial" class="screen panel-screen" hidden>
+        <h2>Обучение</h2>
+      </section>
+
+      <section id="screen-play" class="screen play-screen">
+        <header class="hud">
+          <div class="hud-row">
+            <span>🏆 <strong id="hud-score">0</strong></span>
+            <span>❤️ <strong id="hud-lives">3</strong></span>
+            <span class="hud-wide">РЕКОРД <strong id="hud-record">0</strong></span>
+            <button class="icon-btn" type="button" data-action="sound" id="hud-sound" aria-label="Звук">🔊</button>
+            <button class="icon-btn" type="button" data-action="pause" aria-label="Пауза">⏸</button>
+          </div>
+          <div class="hud-row">
+            <span>LVL <strong id="hud-level">1</strong></span>
+            <span id="hud-combo" class="combo-val">×0</span>
+            <span id="hud-daily" class="hud-daily">🎯 0/0</span>
+            <div class="xp" title="Прогресс уровня">
+              <div class="xp-fill" id="hud-xp"></div>
+            </div>
+          </div>
+        </header>
+        <div class="hud-effects" id="hud-effects"></div>
+        <div id="canvas-wrap">
+          <canvas id="game-canvas"></canvas>
+          <div id="tutorial-hint" class="tutorial-hint" hidden>
+            <p id="tutorial-hint-title" class="tutorial-hint-title">ДВИГАЙТЕСЬ</p>
+            <p id="tutorial-hint-sub" class="tutorial-hint-sub">← →  ·  A D  ·  ◀ ▶</p>
+          </div>
+        </div>
+        <div class="mobile-controls">
+          <button id="pad-left" type="button" aria-label="Влево">◀</button>
+          <button id="pad-right" type="button" aria-label="Вправо">▶</button>
+        </div>
+      </section>
+
+      <div id="ach-pop" class="ach-pop" aria-live="polite">
+        <div class="ach-pop-kicker">🏆 ДОСТИЖЕНИЕ</div>
+        <div id="ach-pop-title" class="ach-pop-title"></div>
+        <div id="ach-pop-hint" class="ach-pop-hint"></div>
+      </div>
+
+      <div id="overlay-reward" class="overlay">
+        <div class="modal">
+          <h2 id="reward-title">Награда</h2>
+          <p id="reward-sub"></p>
+          <p id="reward-extra" class="reward-extra"></p>
+          <button class="btn btn-gold" id="reward-action" type="button" data-action="claim-reward">Отлично</button>
+        </div>
+      </div>
+
+      <div id="overlay-merge" class="overlay">
+        <div class="modal">
+          <h2>Найден локальный прогресс</h2>
+          <p>На этом устройстве есть сохранения. Перенести лучшие рекорды и достижения в облачный профиль?</p>
+          <p class="merge-hint">Игры и сумма очков не складываются автоматически.</p>
+          <button class="btn btn-gold" type="button" data-action="merge-yes" aria-label="Перенести">Перенести</button>
+          <button class="btn btn-ghost" type="button" data-action="merge-later" aria-label="Не сейчас">Не сейчас</button>
+        </div>
+      </div>
+
+      <div id="overlay-pause" class="overlay">
+        <div class="modal">
+          <h2>ПАУЗА</h2>
+          <p>Игра на паузе</p>
+          <button class="btn btn-gold" type="button" data-action="resume" aria-label="Продолжить">Продолжить</button>
+          <button class="btn btn-ghost" type="button" data-action="restart" aria-label="Начать заново">Начать заново</button>
+          <button class="btn btn-ghost" type="button" data-action="menu" aria-label="Главное меню">Главное меню</button>
+          <button class="btn btn-ghost" type="button" data-action="sound" id="pause-sound" aria-label="Звук">🔊 Звук вкл</button>
+        </div>
+      </div>
+
+      <div id="overlay-confirm" class="overlay">
+        <div class="modal">
+          <h2 id="confirm-title">Начать заново?</h2>
+          <p id="confirm-text">Текущий забег будет потерян.</p>
+          <button class="btn btn-gold" type="button" data-action="confirm-yes" aria-label="Подтвердить">Да</button>
+          <button class="btn btn-ghost" type="button" data-action="confirm-no" aria-label="Отмена">Отмена</button>
+        </div>
+      </div>
+
+      <div id="overlay-tutorial-done" class="overlay">
+        <div class="modal">
+          <h2>🥷 ГОТОВО!</h2>
+          <p>Спасайте документы, избегайте проблем и собирайте Combo!</p>
+          <button class="btn btn-gold" type="button" data-action="tutorial-done" aria-label="Начать">НАЧАТЬ</button>
+        </div>
+      </div>
+
+      <div id="overlay-gameover" class="overlay">
+        <div class="modal go-modal">
+          <h2>РАБОЧИЙ ДЕНЬ ЗАКОНЧЕН</h2>
+          <p id="go-record" class="new-record" hidden>🏆 НОВЫЙ РЕКОРД</p>
+          <p id="go-score" class="go-score">0</p>
+          <p id="go-best" class="go-best">Рекорд: 0</p>
+          <p class="rank-label">ВАШЕ ЗВАНИЕ</p>
+          <p id="go-rank" class="rank-title"></p>
+          <div id="go-xp" class="go-xp">
+            <p id="go-xp-label" class="xp-caption"></p>
+            <div class="xp-bar"><div id="go-xp-fill" class="xp-bar-fill"></div></div>
+            <p id="go-daily" class="go-daily"></p>
+          </div>
+          <div class="result-card" id="result-card">
+            <div class="rc-name">БУХГАЛТЕР-НИНДЗЯ</div>
+            <div class="rc-score" id="rc-score">0 ОЧКОВ</div>
+            <div class="rc-rank" id="rc-rank"></div>
+            <div class="rc-meta"><span id="rc-combo"></span><span id="rc-level"></span></div>
+            <div class="rc-foot">«Налоговая не страшна»</div>
+          </div>
+          <button class="btn btn-ghost btn-details" type="button" data-action="go-details" id="go-details-btn" aria-label="Подробнее">Подробнее</button>
+          <div id="go-stats" class="go-stats" hidden></div>
+          <button class="btn btn-gold" type="button" data-action="restart" aria-label="Играть ещё">ИГРАТЬ ЕЩЁ</button>
+          <button class="btn btn-ghost" type="button" data-action="share" aria-label="Поделиться">ПОДЕЛИТЬСЯ</button>
+          <button class="btn btn-ghost" type="button" data-action="leaderboard" aria-label="Рейтинг">РЕЙТИНГ</button>
+          <div id="go-invite" hidden>
+            <p class="cta-mini">Бросить вызов коллегам</p>
+            <button class="btn btn-ghost" type="button" data-action="invite" aria-label="Позвать коллег">Позвать коллег</button>
+          </div>
+          <p class="cta cta-weak">Хотите меньше бухгалтерского экстрима в реальной жизни?</p>
+          <button class="btn btn-ghost btn-community-weak" type="button" data-action="community" aria-label="В сообщество">В сообщество</button>
+          <button class="btn btn-ghost" type="button" data-action="menu" aria-label="Главное меню">Главное меню</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="rotate-hint" class="rotate-hint" aria-hidden="true">
+    Для удобной игры поверните телефон вертикально 📱
+  </div>
+  <div id="debug-panel" class="debug-panel" hidden>
+    <div>Environment: <span id="dbg-env">browser</span></div>
+    <div>Platform: <span id="dbg-plat">—</span></div>
+    <div>User: <span id="dbg-user">guest</span></div>
+    <div>FPS: <span id="dbg-fps">—</span></div>
+    <div>Player Level: <span id="dbg-plevel">1</span></div>
+    <div>XP: <span id="dbg-xp">0</span></div>
+    <div>Daily: <span id="dbg-daily">—</span></div>
+    <div>Streak: <span id="dbg-streak">0</span></div>
+    <div>Storage: <span id="dbg-storage">2</span></div>
+    <div>API: <span id="dbg-api">local</span></div>
+    <div>Last run: <span id="dbg-last">—</span></div>
+    <div id="debug-tools" class="debug-tools" hidden>
+      <button type="button" data-action="debug-xp">+1000 XP</button>
+      <button type="button" data-action="debug-daily">Complete Daily</button>
+      <button type="button" data-action="debug-ach">Unlock Achievement</button>
+      <button type="button" data-action="debug-reset-daily">Reset Daily</button>
+      <button type="button" data-action="debug-date">+1 debug day</button>
+    </div>
+  </div>
+  <div id="toast" class="toast" role="status"></div>
+
+  <script src="./js/config.js?v=0.9.0"></script>
+  <script src="./js/runtime-config.js?v=0.9.0"></script>
+  <script src="./js/storage.js?v=0.9.0"></script>
+  <script src="./js/playerData.js?v=0.9.0"></script>
+  <script src="./js/api.js?v=0.9.0"></script>
+  <script src="./js/analytics.js?v=0.9.0"></script>
+  <script src="./js/leaderboard.js?v=0.9.0"></script>
+  <script src="./js/vk.js?v=0.9.0"></script>
+  <script src="./js/audio.js?v=0.9.0"></script>
+  <script src="./js/sprites.js?v=0.9.0"></script>
+  <script src="./js/player.js?v=0.9.0"></script>
+  <script src="./js/objects.js?v=0.9.0"></script>
+  <script src="./js/achievements.js?v=0.9.0"></script>
+  <script src="./js/daily.js?v=0.9.0"></script>
+  <script src="./js/sync.js?v=0.9.0"></script>
+  <script src="./js/rewards.js?v=0.9.0"></script>
+  <script src="./js/events.js?v=0.9.0"></script>
+  <script src="./js/resultCard.js?v=0.9.0"></script>
+  <script src="./js/ui.js?v=0.9.0"></script>
+  <script src="./js/game.js?v=0.9.0"></script>
+</body>
+</html>
