@@ -16,7 +16,8 @@
 (function (global) {
   'use strict';
 
-  const BRIDGE_SRC = 'https://cdn.jsdelivr.net/npm/@vkontakte/vk-bridge@2.15.9/dist/browser.min.js';
+  const BRIDGE_SRC = './js/vendor/vk-bridge.min.js?v=' + (global.APP_VERSION || '0.9.2');
+  const BRIDGE_CDN = 'https://cdn.jsdelivr.net/npm/@vkontakte/vk-bridge@2.15.9/dist/browser.min.js';
   const INIT_TIMEOUT = (APP_CONFIG && APP_CONFIG.vkInitTimeoutMs) || 2500;
 
   const appEnvironment = {
@@ -163,6 +164,18 @@
     }
   }
 
+  function isVkClient() {
+    try {
+      const bridge = global.vkBridge;
+      if (bridge) {
+        if (typeof bridge.isWebView === 'function' && bridge.isWebView()) return true;
+        if (typeof bridge.isIframe === 'function' && bridge.isIframe()) return true;
+        if (typeof bridge.isEmbedded === 'function' && bridge.isEmbedded()) return true;
+      }
+    } catch (err) {}
+    return looksLikeVK();
+  }
+
   function resetGuestProfile() {
     playerProfile.id = null;
     playerProfile.firstName = '';
@@ -254,7 +267,7 @@
       if (!this.bridge || typeof this.bridge.send !== 'function') {
         return Promise.reject(new Error('no-bridge'));
       }
-      if (!this.supports(method)) {
+      if (method !== 'VKWebAppInit' && !this.supports(method)) {
         return Promise.reject(new Error('unsupported'));
       }
       return this.bridge.send(method, params || {});
@@ -265,7 +278,7 @@
       parseLaunchParams();
       applyMockIfDebug();
 
-      const wantVK = !!(APP_CONFIG.vkEnabled && looksLikeVK());
+      const wantVK = !!(APP_CONFIG.vkEnabled && isVkClient());
       if (!wantVK) {
         appEnvironment.mode = 'browser';
         appEnvironment.platform = null;
@@ -281,6 +294,10 @@
           return self._afterBridge();
         })
         .catch(function (err) {
+          if (global.vkBridge && typeof global.vkBridge.send === 'function') {
+            self.bridge = global.vkBridge;
+            return self._afterBridge();
+          }
           if (err && err.message !== 'timeout') {
             if (global.DEBUG) {
               try { console.warn('VK недоступен, продолжаем как гость'); } catch (ignore) {}
@@ -304,7 +321,9 @@
         this.bridge = global.vkBridge;
         return Promise.resolve(this.bridge);
       }
-      return loadScript(BRIDGE_SRC).then(function () {
+      return loadScript(BRIDGE_SRC).catch(function () {
+        return loadScript(BRIDGE_CDN);
+      }).then(function () {
         if (!global.vkBridge || typeof global.vkBridge.send !== 'function') {
           throw new Error('bridge-missing');
         }
@@ -315,19 +334,24 @@
 
     _afterBridge: function () {
       const self = this;
-      return this.send('VKWebAppInit', {})
-        .then(function () {
-          appEnvironment.mode = 'vk';
-          appEnvironment.vkAvailable = true;
-          self.inVK = true;
-          self._subscribe();
-          return self._readLaunchParams();
-        })
-        .then(function () {
+      function continueVk() {
+        appEnvironment.mode = 'vk';
+        appEnvironment.vkAvailable = true;
+        self.inVK = true;
+        self._subscribe();
+        return self._readLaunchParams().then(function () {
           if (!APP_CONFIG.vkProfileEnabled) return playerProfile;
           return self.getUser();
+        }).catch(function () {
+          return playerProfile;
+        });
+      }
+      return this.send('VKWebAppInit', {})
+        .then(function () {
+          return continueVk();
         })
         .catch(function () {
+          if (isVkClient() || global.__vkWebAppInitPromise) return continueVk();
           self.inVK = false;
           enterGuest('browser');
           return playerProfile;
