@@ -96,7 +96,7 @@
         node.textContent = APP_CONFIG.communityName;
       });
       if (this.els.aboutVersion) {
-        this.els.aboutVersion.textContent = 'Версия ' + (global.APP_VERSION || '0.9.0');
+        this.els.aboutVersion.textContent = 'Версия ' + (global.APP_VERSION || '0.9.1');
       }
 
       this.bindClicks();

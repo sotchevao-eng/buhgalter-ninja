@@ -269,7 +269,7 @@
     startSession: function () {
       if (!this.isOnline()) return Promise.resolve(null);
       return ApiClient.post('/api/v1/game/session', {
-        gameVersion: global.APP_VERSION || '0.9.0'
+        gameVersion: global.APP_VERSION || '0.9.1'
       }).then(function (data) {
         return data;
       }).catch(function (err) {
@@ -283,7 +283,7 @@
         return Promise.resolve({ local: true });
       }
       const body = Object.assign({
-        gameVersion: global.APP_VERSION || '0.9.0'
+        gameVersion: global.APP_VERSION || '0.9.1'
       }, payload || {});
       return ApiClient.post('/api/v1/game/session/' + encodeURIComponent(sessionId) + '/finish', body)
         .then(function (data) {

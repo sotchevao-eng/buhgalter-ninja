@@ -24,6 +24,7 @@
 
   FallingObject.prototype.update = function (dt, animScale) {
     const k = animScale || 1;
+    // Реальное движение: CSS-пиксели. speed — из getFallSpeed() (пикселей за кадр при 60 FPS).
     this.y += this.speed * dt * 60 * k;
     this.swing += dt * 2.4 * k;
     if (this.appear < 1) this.appear = Math.min(1, this.appear + dt * 4);
