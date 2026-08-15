@@ -485,7 +485,7 @@
     }
 
     if (this.tutorialActive) {
-      for (let i = 0; i < this.objects.length; i++) this.objects[i].update(dt, 0.85);
+      for (let i = 0; i < this.objects.length; i++) this.objects[i].update(dt, 1);
     }
 
     for (let i = 0; i < this.particles.length; i++) this.particles[i].update(dt);
@@ -529,11 +529,11 @@
       return;
     }
     if (this.tutorialStep === 2 && !this._tutObj) {
-      this._tutObj = this._spawnTutorial('pervichka', 0.52);
+      this._tutObj = this._spawnTutorial('pervichka', getFallSpeed(1, '', false, 30) * 0.88);
       UI.showTutorialHint('Поймайте полезный документ', '📄 Первичка');
     }
     if (this.tutorialStep === 3 && !this._tutObj) {
-      this._tutObj = this._spawnTutorial('noSign', 0.5);
+      this._tutObj = this._spawnTutorial('noSign', getFallSpeed(1, '', false, 30) * 0.88);
       UI.showTutorialHint('А этого лучше избегать', '⚠️ Нет подписи');
     }
   };

@@ -5,7 +5,7 @@
 (function (global) {
   'use strict';
 
-  const APP_VERSION = '0.9.0';
+  const APP_VERSION = '0.9.1';
   const DEBUG = false;
   const PLAYTEST_MODE = false;
   const STORAGE_VERSION = 2;
@@ -466,7 +466,8 @@
     return {
       level: lv,
       early: early,
-      fallSpeed: Math.min(3.15, (early ? 1.59 : 1.96) + (lv - 1) * 0.11),
+      // Пикселей за кадр при 60 FPS. Исходная база была 1.12 / 1.38.
+      fallSpeed: Math.min(4.5, 2.62 + (lv - 1) * 0.12),
       spawnMs: Math.max(520, (early ? 1450 : 1120) - (lv - 1) * 40),
       good: Math.max(0.55, 1 - bad - bonus),
       bad: bad,
@@ -542,7 +543,7 @@
     if (eventId === 'monthClose' || eventId === 'bossQuarter') speed *= 1.12;
     if (eventId === 'update1c') speed *= 0.88;
     if (delayed) speed *= 0.62;
-    return Math.min(3.2, speed);
+    return Math.min(4.8, speed);
   }
 
   global.APP_VERSION = APP_VERSION;
