@@ -5,7 +5,7 @@
 (function (global) {
   'use strict';
 
-  const APP_VERSION = '0.9.1';
+  const APP_VERSION = '0.9.2';
   const DEBUG = false;
   const PLAYTEST_MODE = false;
   const STORAGE_VERSION = 2;

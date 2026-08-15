@@ -6,7 +6,7 @@ const { spawnSync } = require('child_process');
 
 const SERVER_ROOT = path.resolve(__dirname, '..');
 const PROJECT_ROOT = path.resolve(SERVER_ROOT, '..');
-const EXPECTED_VERSION = '0.9.0';
+const EXPECTED_VERSION = '0.9.2';
 const SECRET_NAMES = ['VK_APP_SECRET', 'SESSION_SECRET', 'DATABASE_URL'];
 
 const FRONTEND_FILES = [
@@ -22,6 +22,7 @@ const FRONTEND_FILES = [
   'js/analytics.js',
   'js/leaderboard.js',
   'js/vk.js',
+  'js/vendor/vk-bridge.min.js',
   'js/audio.js',
   'js/sprites.js',
   'js/player.js',
@@ -143,6 +144,9 @@ line('STORAGE_VERSION: ' + (storageVersion === '2' ? 'PASS (2, no bump)' : 'WARN
 const indexHtml = read(path.join(PROJECT_ROOT, 'index.html'));
 const cacheBad = checkCacheBust(indexHtml, EXPECTED_VERSION);
 line('Cache bust ?v=' + EXPECTED_VERSION + ': ' + (cacheBad.length ? 'FAIL (' + cacheBad.join(', ') + ')' : 'PASS'));
+const headHtml = indexHtml.slice(0, Math.max(0, indexHtml.indexOf('</head>')));
+const vkInitEarly = headHtml.indexOf('VKWebAppInit') >= 0 && headHtml.indexOf('vk-bridge.min.js') >= 0;
+line('VKWebAppInit in <head>: ' + (vkInitEarly ? 'PASS' : 'FAIL'));
 
 const runtime = read(path.join(PROJECT_ROOT, 'js', 'runtime-config.js'));
 const publicEmpty =
@@ -202,7 +206,7 @@ if (!production) {
   line('Local note: empty VK/URL values are allowed; browser Guest/Local mode still works.');
 }
 
-const tests = spawnSync(process.execPath, ['--test', './tests/vkSign.test.js', './tests/scoreRules.test.js', './tests/xp.test.js'], {
+const tests = spawnSync(process.execPath, ['--test', './tests/vkSign.test.js', './tests/scoreRules.test.js', './tests/xp.test.js', './tests/vkBridgeHtml.test.js'], {
   cwd: SERVER_ROOT,
   encoding: 'utf8'
 });
@@ -227,6 +231,7 @@ if (debugOn) blockers.push('DEBUG');
 if (playtestOn) blockers.push('PLAYTEST_MODE');
 if (!mockNull) blockers.push('mockVKUser');
 if (cacheBad.length) blockers.push('cache-bust');
+if (!vkInitEarly) blockers.push('vk-init-head');
 if (missingFiles.length) blockers.push('frontend-files');
 if (missingRefs.length) blockers.push('html-paths');
 if (secretHits.length) blockers.push('frontend-secrets');
@@ -245,7 +250,7 @@ const productionReady = blockers.length === 0 &&
   envStatus('VK_APP_SECRET') === 'SET';
 
 const codeFail = blockers.filter(function (item) {
-  return ['APP_VERSION', 'DEBUG', 'PLAYTEST_MODE', 'mockVKUser', 'cache-bust', 'frontend-files', 'html-paths', 'frontend-secrets', 'server-version', 'backend-tests'].indexOf(item) !== -1;
+  return ['APP_VERSION', 'DEBUG', 'PLAYTEST_MODE', 'mockVKUser', 'cache-bust', 'vk-init-head', 'frontend-files', 'html-paths', 'frontend-secrets', 'server-version', 'backend-tests'].indexOf(item) !== -1;
 });
 
 line('');
