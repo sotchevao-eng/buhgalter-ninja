@@ -466,7 +466,7 @@
     return {
       level: lv,
       early: early,
-      fallSpeed: Math.min(3.15, (early ? 1.12 : 1.38) + (lv - 1) * 0.11),
+      fallSpeed: Math.min(3.15, (early ? 1.59 : 1.96) + (lv - 1) * 0.11),
       spawnMs: Math.max(520, (early ? 1450 : 1120) - (lv - 1) * 40),
       good: Math.max(0.55, 1 - bad - bonus),
       bad: bad,
